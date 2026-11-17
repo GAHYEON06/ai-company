@@ -12,7 +12,8 @@
     "eval": "eve eval",
     "start": "eve start",
     "typecheck": "tsc",
-    "audit": "npm audit --audit-level=high"
+    "audit": "npm audit --audit-level=high",
+    "ui": "node scripts/preview.mjs"
   },
   "dependencies": {
     "ai": "^7.0.172",
