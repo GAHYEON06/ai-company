@@ -22,5 +22,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run typecheck
+      - name: Test local bridge authorization and request handling
+        run: npm run test:bridge
       - name: Check known dependency vulnerabilities
         run: npm run audit
+
