@@ -8,13 +8,15 @@ const server = createServer(async (req, res) => {
     res.writeHead(405, { Allow: 'GET, HEAD' }).end();
     return;
   }
-  if (!['/', '/index.html', '/ai-company/', '/ai-company/index.html'].includes(new URL(req.url, 'http://localhost').pathname)) {
+  const pathname = new URL(req.url, 'http://localhost').pathname;
+  if (!['/', '/index.html', '/ai-company/', '/ai-company/index.html', '/office-connection.js', '/ai-company/office-connection.js'].includes(pathname)) {
     res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Not found');
     return;
   }
   try {
-    const body = await readFile(page);
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
+    const script = pathname.endsWith('.js');
+    const body = await readFile(script ? new URL('../office-connection.js', import.meta.url) : page);
+    res.writeHead(200, { 'Content-Type': script ? 'text/javascript; charset=utf-8' : 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
     res.end(req.method === 'HEAD' ? undefined : body);
   } catch {
     res.writeHead(500).end('Unable to load UI');
