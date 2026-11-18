@@ -70,3 +70,16 @@ test('invalid requests and unconfigured runtime never report successful work', a
   assert.equal(response.status, 503);
   assert.equal((await fetch(base + '/api/jobs', { method: 'POST', headers, body: JSON.stringify({ id: 'test-task-12345', title: 'x'.repeat(30000), agents: ['manager'] }) })).status, 413);
 });
+test('Windows vault round-trip encrypts without plaintext key files', { skip: process.platform !== 'win32' }, async () => {
+  const transform = (operation, value) => new Promise((resolve, reject) => {
+    const child = spawn('powershell.exe', ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', join(root, 'scripts', 'protect-key.ps1'), '-Operation', operation], { windowsHide: true, stdio: ['pipe', 'pipe', 'pipe'] });
+    let result = '';
+    child.stdout.setEncoding('utf8'); child.stdout.on('data', chunk => { result += chunk; }); child.stderr.resume();
+    child.on('error', reject); child.on('close', code => code === 0 ? resolve(result) : reject(new Error('Vault process failed')));
+    child.stdin.end(value);
+  });
+  const fixture = 'not-a-real-key-vault-roundtrip-test';
+  const encrypted = await transform('protect', fixture);
+  assert.equal(encrypted.includes(fixture), false);
+  assert.equal(await transform('unprotect', encrypted), fixture);
+});
