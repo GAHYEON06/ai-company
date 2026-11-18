@@ -13,7 +13,9 @@
     "start": "eve start",
     "typecheck": "tsc",
     "audit": "npm audit --audit-level=high",
-    "ui": "node scripts/preview.mjs"
+    "ui": "node scripts/preview.mjs",
+    "office": "node scripts/office-server.mjs",
+    "test:bridge": "node --test tests/office-bridge.test.mjs"
   },
   "dependencies": {
     "ai": "^7.0.172",

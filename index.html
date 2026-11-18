@@ -105,5 +105,6 @@
     $('#export-tasks').onclick=()=>{if(!tasks.length){toast('내보낼 업무가 아직 없어요.');return}const blob=new Blob([tasks.map(briefing).join('\n\n──────────\n\n')],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='포근컴퍼니-업무브리핑.txt';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
     const now=new Date();$('#today').textContent=now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric',weekday:'short',timeZone:'Asia/Seoul'});$('#today').dateTime=now.toISOString();initTeam();load();renderTasks();setView(location.hash==='#tasks'?'tasks':'office');window.addEventListener('hashchange',()=>setView(location.hash==='#tasks'?'tasks':'office'));
   </script>
+  <script src="./office-connection.js"></script>
 </body>
 </html>
